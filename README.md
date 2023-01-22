@@ -6,5 +6,5 @@ The products are :
 
 1. The book
 2. Presentation (PPT)
-3. Link for the Prototype-GUI (Axcure).
+3. Link for the Prototype-GUI (Axure).
 4. UML Diagrams
