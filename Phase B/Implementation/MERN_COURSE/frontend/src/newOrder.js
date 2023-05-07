@@ -33,7 +33,7 @@ export default function NewOrder() {
     //The destination that typed by the supplier converted to latitude and longitude using the google cloud API
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       address
-    )}&key=AIzaSyDryedOvaoU_t3QfKLO2kRdXlvXdhZlwRo`;
+    )}&key=${key}`;
     console.log(url)
     fetch(url)
       .then((response) => response.json())
