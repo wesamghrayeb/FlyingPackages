@@ -12,6 +12,7 @@ import courierRegister from './courierRegister'
 import editOrder from './editOrder';
 import newOrder from './newOrder'
 import payments from './payments'
+import ReceivedOrders from './ReceivedOrd'
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
         <Route exact path="/supplierForm/newOrder" component={newOrder} />
         <Route exact path="/supplierForm/payments" component={payments} />
         <Route exact path="/courierForm" component={courierForm} />
+        <Route exact path="/courierForm/ReceivedOrders" component={ReceivedOrders} />
+
 
       </Switch>
     </Router>

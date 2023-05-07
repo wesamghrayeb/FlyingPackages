@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-const availablityStatus = {
-    TYPE1: 'type1',
-    TYPE2: 'type2',
-    TYPE3: 'type3'
-}
-
-const status = {
-    TYPE1: 'type1',
-    TYPE2: 'type2',
-    TYPE3: 'type3'
-}
 
 const courierSchema = new mongoose.Schema({
     birthDate: {
@@ -29,13 +18,13 @@ const courierSchema = new mongoose.Schema({
     },
     availablityStatus: {
         type: String,
-        enum: ['type1', 'type2','type3'],
-        default : 'type1',
+        enum: ['Available', 'Busy'],
+        default : 'Available',
     },
     status: {
         type: String,
-        enum: ['type1', 'type2','type3'],
-        default : 'type1',
+        enum: ['Ok', 'Warning'],
+        default : 'Ok',
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,

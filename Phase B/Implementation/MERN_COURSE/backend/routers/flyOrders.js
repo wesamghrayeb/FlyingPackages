@@ -1,10 +1,9 @@
-const {flyOrder} = require('../models/flyOrder');
-const {flyUser} = require('../models/flyUser');
-const {Location} = require('../models/Location');
-const express = require('express');
+const { flyOrder } = require("../models/flyOrder");
+const { flyUser } = require("../models/flyUser");
+const { Location } = require("../models/Location");
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 /**
  * handling the get request for getting the list of the orders from the database:
@@ -12,67 +11,70 @@ const mongoose = require('mongoose');
  * await for find the order list in the database
  * then send the orderList
  */
-router.get('/', async (req, res) =>{
-    const orderList = await flyOrder.find()  .populate([
-        {
-        path: 'supplier',
-        populate: {
-          path: 'user',
-          model: flyUser
-        }
+router.get("/", async (req, res) => {
+  const orderList = await flyOrder.find().populate([
+    {
+      path: "supplier",
+      populate: {
+        path: "user",
+        model: flyUser,
       },
-      {
-        path: 'courier',
-        populate: {
-            path: 'user',
-            model: flyUser
-        }
+    },
+    {
+      path: "courier",
+      populate: {
+        path: "user",
+        model: flyUser,
       },
-      {
-        path: 'origin',
-        populate: {
-            path: 'name',
-        }
+    },
+    {
+      path: "origin",
+      populate: {
+        path: "name",
       },
-      {
-        path: 'destination',
-        populate: {
-            path: 'name',
-        }
-      }
-    ]);
-    if(!orderList) {
-        res.status(500).json({success: false})
-    } 
-    res.send(orderList);
-})
+    },
+    {
+      path: "destination",
+      populate: {
+        path: "name",
+      },
+    },
+  ]);
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
 
 /**
  * handling the get request for getting the specific order by id from the database:
  *  * http://localhost:3000/api/v1/flyOrder/643536c2d6d7b323c99fb1e5 ||| GET
  * await for find the order list in the database
  * I add the .populate to expand the info of the flyOrder.origin and flyOrder.destination
- * then send the flyorder 
+ * then send the flyorder
  */
-router.get(`/:id`, async (req, res) =>{
-    const flyorder = await flyOrder.findById(req.params.id).populate('origin').populate('destination')    
+router.get(`/:id`, async (req, res) => {
+  const flyorder = await flyOrder
+    .findById(req.params.id)
+    .populate("origin")
+    .populate("destination");
 
-    if(!flyorder) {
-        res.status(500).json({success: false})
-    } 
-    res.send(flyorder);
-})
+  if (!flyorder) {
+    res.status(500).json({ success: false });
+  }
+  res.send(flyorder);
+});
 
-router.get(`/get/count`, async (req, res) =>{
+router.get(`/get/count`, async (req, res) => {
+  const orderCount = await flyOrder.countDocuments({}).exec(); //counting how many objects in the flyOrder schema
 
-    const orderCount = await flyOrder.countDocuments({}).exec(); //counting how many objects in the flyOrder schema
-
-    if(!orderCount){
-        res.status(500).json({succes: false})
-    }
-    res.send({
-        orderCount: orderCount});
-})
+  if (!orderCount) {
+    res.status(500).json({ succes: false });
+  }
+  res.send({
+    orderCount: orderCount,
+  });
+});
 
 /**
  * handling the post request of adding a new order:
@@ -81,81 +83,153 @@ router.get(`/get/count`, async (req, res) =>{
  * await for saving the new order in the database
  * then send the res
  */
-router.post('/', async (req,res)=>{
-    let flyorder = new flyOrder({
-        orderNumber: req.body.orderNumber,
-        supplier: req.body.supplier,
-        courier: req.body.courier,
-        submitDate: req.body.submitDate,
-        submitHour: req.body.submitHour,
-        completedDate: req.body.completedDate,
-        customerPhoneNumber: req.body.customerPhoneNumber,
-        origin: req.body.origin,
-        destination: req.body.destination,
-    })
-    flyorder = await flyorder.save();
+router.post("/", async (req, res) => {
+  let flyorder = new flyOrder({
+    orderNumber: req.body.orderNumber,
+    supplier: req.body.supplier,
+    courier: req.body.courier,
+    submitDate: req.body.submitDate,
+    submitHour: req.body.submitHour,
+    completedDate: req.body.completedDate,
+    customerPhoneNumber: req.body.customerPhoneNumber,
+    origin: req.body.origin,
+    destination: req.body.destination,
+  });
+  flyorder = await flyorder.save();
 
-    if(!flyorder)
-    return res.status(400).send('the order cannot be created!')
+  if (!flyorder) return res.status(400).send("the order cannot be created!");
 
-    res.send(flyorder);
-})
+  res.send(flyorder);
+});
 
-router.get('/get/:id', async (req, res) =>{
-    const orderList = await flyOrder.find({'supplier' : req.params.id})
-     .populate([
-        {
-        path: 'supplier',
-        populate: {
-          path: 'user',
-          model: flyUser
-        }
+router.get("/get/:id", async (req, res) => {
+  const orderList = await flyOrder.find({ supplier: req.params.id }).populate([
+    {
+      path: "supplier",
+      populate: {
+        path: "user",
+        model: flyUser,
       },
-      {
-        path: 'courier',
-        populate: {
-            path: 'user',
-            model: flyUser
-        }
+    },
+    {
+      path: "courier",
+      populate: {
+        path: "user",
+        model: flyUser,
       },
-      {
-        path: 'origin',
-        populate: {
-            path: 'name',
-        }
+    },
+    {
+      path: "origin",
+      populate: {
+        path: "name",
       },
-      {
-        path: 'destination',
-        populate: {
-            path: 'name',
-        }
-      }
-    ]);
-    if(!orderList) {
-        res.status(500).json({success: false})
-    } 
-    res.send(orderList);
-})
+    },
+    {
+      path: "destination",
+      populate: {
+        path: "name",
+      },
+    },
+  ]);
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
 
-router.put('/update/:id', async (req, res)=>{
+router.get("/get/courierOrders/:id", async (req, res) => {
+  const orderList = await flyOrder.find({ courier: req.params.id }).populate([
+    {
+      path: "supplier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "courier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "origin",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "destination",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "submitDate",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "submitHour",
+      populate: {
+        path: "name",
+      },
+    },
+  ]);
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
+
+router.get('/get/countThePending/:id', async (req, res) => {
+  try {
+    const orderCount = await flyOrder.countDocuments({
+      courier: req.params.id,
+      status: 'PENDING'
+    });
+
+    res.send({ orderCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false });
+  }
+});
+
+// router.get('/get/getReceivedOrders/:id', async (req, res) => {
+//   try {
+//     const orders = await flyOrder.countDocuments({
+//       courier: req.params.id,
+//       status: 'PENDING'
+//     });
+
+//     res.send({ orderCount });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false });
+//   }
+// });
+
+
+
+router.put("/update/:id", async (req, res) => {
   const order = await flyOrder.findByIdAndUpdate(
-      req.params.id,
-      {
-         submitDate: req.body.submitDate,
-         submitHour: req.body.submitHour
-      },
-      {new: true}
-  )
+    req.params.id,
+    {
+      submitDate: req.body.submitDate,
+      submitHour: req.body.submitHour,
+    },
+    { new: true }
+  );
 
-  if(!order)
-  return res.status(404).send('the order cannot be updated')
+  if (!order) return res.status(404).send("the order cannot be updated");
 
   res.send(order);
-})
-
+});
 
 module.exports = router;
-
 
 /**
  * creating a new flyOrder this is the body of the request
