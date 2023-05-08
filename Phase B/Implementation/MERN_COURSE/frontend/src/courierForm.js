@@ -74,7 +74,7 @@ function CourierForm() {
       <p>We're glad you're here.</p>
       <button onClick={handleReceivedOrders}>
         <i className="fa fa-bell" />
-        {ordersCount > 0 && <span>{ordersCount} Received Orders</span>}
+        {ordersCount > -1 && <span>{ordersCount} Received Orders - My orders</span>}
       </button>
       <select value={status} onChange={handleChangeStatus}>
         <option value="Available">Available</option>
