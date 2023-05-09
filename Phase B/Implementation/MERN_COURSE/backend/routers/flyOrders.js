@@ -138,6 +138,53 @@ router.get("/get/:id", async (req, res) => {
 });
 
 router.get("/get/courierOrders/:id", async (req, res) => {
+  const orderList = await flyOrder.find({ courier: req.params.id, status:"PENDING" }).populate([
+    {
+      path: "supplier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "courier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "origin",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "destination",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "submitDate",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "submitHour",
+      populate: {
+        path: "name",
+      },
+    },
+  ]);
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
+
+router.get("/get/courierOrders/all/:id", async (req, res) => {
   const orderList = await flyOrder.find({ courier: req.params.id }).populate([
     {
       path: "supplier",
@@ -198,19 +245,16 @@ router.get('/get/countThePending/:id', async (req, res) => {
   }
 });
 
-// router.get('/get/getReceivedOrders/:id', async (req, res) => {
-//   try {
-//     const orders = await flyOrder.countDocuments({
-//       courier: req.params.id,
-//       status: 'PENDING'
-//     });
+// router.get("/findOrder/:courierId", async (req, res) => {
+//   const takingOrder = await flyOrder.find(
+//     (order) =>
+//     order.status === "IN DELIVERY" &&
+//     order.courier._id === req.params.courierId
+//     );
+//     res.send(takingOrder);
+//   });
 
-//     res.send({ orderCount });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false });
-//   }
-// });
+
 
 
 
@@ -225,6 +269,20 @@ router.put("/update/:id", async (req, res) => {
   );
 
   if (!order) return res.status(404).send("the order cannot be updated");
+
+  res.send(order);
+});
+
+router.put("/updateStatus/:status/:id", async (req, res) => {
+  const order = await flyOrder.findByIdAndUpdate(
+    req.params.id,
+    {
+      status: req.params.status,
+    },
+    { new: true }
+  );
+
+  if (!order) return res.status(404).send("the order status cannot be updated");
 
   res.send(order);
 });
