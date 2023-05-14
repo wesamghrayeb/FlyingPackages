@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./OrdersTable.css"; // Import CSS file for styling
 //require('dotenv/config');
+import "react-dotenv";
 
 export default function NewOrder() {
   const [courier, setCourier] = useState(null);
@@ -27,68 +28,69 @@ export default function NewOrder() {
     e.preventDefault(); // Prevent default form submission behavior
 
     console.log(courier);
-    const key = process.env.API_KEY;
+    const key = process.env.REACT_APP_API_KEY;
     const address = destination;
     let finalLocation;
     //The destination that typed by the supplier converted to latitude and longitude using the google cloud API
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       address
     )}&key=${key}`;
-    console.log(url)
+    console.log(url);
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         const location = data.results[0].geometry.location;
         latitudeGo = location.lat;
         longitudeGo = location.lng;
-        axios.post('http://localhost:3000/api/v1/Locations', {
-          latitude: latitudeGo,
-          longitude: longitudeGo,
-          name: destination,
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then((response) => {
-          finalLocation = response.data;
-          console.log(finalLocation);
-          let thisCourier = couriers.find((c) => c.user.userName === courier);
-          // Create a new order object
-          const newOrder = {
-            supplier: thisSupplier._id,
-            courier: thisCourier._id,
-            customerPhoneNumber: customerPhoneNumber,
-            destination: finalLocation.id,
-            submitHour: submitHour,
-            submitDate: submitDate,
-            orderNumber: Math.floor(Math.random() * 100000) + 5,
-            origin: thisSupplier.location._id,
-            completedDate: "15/06/2023",
-          };
-          // Send a POST request to the server to add the new order to the database
-          axios
-            .post("http://localhost:3000/api/v1/flyOrders/", newOrder)
-            .then((response) => {
-              console.log(response.data);
-              alert("The order created, wait for approve from " + courier);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-
+        axios
+          .post(
+            "http://localhost:3000/api/v1/Locations",
+            {
+              latitude: latitudeGo,
+              longitude: longitudeGo,
+              name: destination,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            finalLocation = response.data;
+            console.log(finalLocation);
+            let thisCourier = couriers.find((c) => c.user.userName === courier);
+            // Create a new order object
+            const newOrder = {
+              supplier: thisSupplier._id,
+              courier: thisCourier._id,
+              customerPhoneNumber: customerPhoneNumber,
+              destination: finalLocation.id,
+              submitHour: submitHour,
+              submitDate: submitDate,
+              orderNumber: Math.floor(Math.random() * 100000) + 5,
+              origin: thisSupplier.location._id,
+              completedDate: "15/06/2023",
+            };
+            // Send a POST request to the server to add the new order to the database
+            axios
+              .post("http://localhost:3000/api/v1/flyOrders/", newOrder)
+              .then((response) => {
+                console.log(response.data);
+                alert("The order created, wait for approve from " + courier);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => console.log(error));
 
     console.log(latitudeGo);
     console.log(longitudeGo);
-
-
   };
 
   const handleInputChange = (e) => {

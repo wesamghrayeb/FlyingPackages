@@ -43,7 +43,7 @@ function Login() {
         dataJson = json
         const userRole= dataJson.role;
         localStorage.setItem("user", JSON.stringify(dataJson))
-        userRole==='S'? history.push({pathname: '/supplierForm', state: dataJson}) : history.push({pathname: '/courierForm', state: dataJson})
+        userRole==='S'? history.push({pathname: '/supplierForm', state: dataJson}) : userRole ==='C' ? history.push({pathname: '/courierForm', state: dataJson}) : history.push({pathname: '/managerForm', state: dataJson})
       })
       .catch(function(error){
         alert('Login failed!');

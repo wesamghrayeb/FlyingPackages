@@ -13,6 +13,7 @@ import editOrder from './editOrder';
 import newOrder from './newOrder'
 import payments from './payments'
 import ReceivedOrders from './ReceivedOrd'
+import managerForm from './managerForm'
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
         <Route exact path="/supplierForm/payments" component={payments} />
         <Route exact path="/courierForm" component={courierForm} />
         <Route exact path="/courierForm/ReceivedOrders" component={ReceivedOrders} />
+        <Route exact path="/managerForm" component={managerForm} />
+
 
 
       </Switch>

@@ -102,6 +102,42 @@ router.post("/", async (req, res) => {
   res.send(flyorder);
 });
 
+router.get("/get/allOrders", async (req, res) => {
+  const orderList = await flyOrder.find().populate([
+    {
+      path: "supplier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "courier",
+      populate: {
+        path: "user",
+        model: flyUser,
+      },
+    },
+    {
+      path: "origin",
+      populate: {
+        path: "name",
+      },
+    },
+    {
+      path: "destination",
+      populate: {
+        path: "name",
+      },
+    },
+  ]);
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
+
+
 router.get("/get/:id", async (req, res) => {
   const orderList = await flyOrder.find({ supplier: req.params.id }).populate([
     {
