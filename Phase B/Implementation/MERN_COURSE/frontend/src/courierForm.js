@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
-
+import { useHistory } from "react-router-dom";
 import axios from 'axios';
 
 function CourierForm() {
@@ -64,6 +64,12 @@ function CourierForm() {
 
   };
 
+  const history = useHistory();
+
+  const handleGoBack = () => {
+    history.push("/login");
+  };
+
   return (
     <div>
       <h1>
@@ -80,6 +86,8 @@ function CourierForm() {
         <option value="Available">Available</option>
         <option value="Busy">Busy</option>
       </select>
+      <button onClick={handleGoBack}>LogOut</button>
+
     </div>
   );
 }
