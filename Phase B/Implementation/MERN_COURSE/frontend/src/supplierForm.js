@@ -9,7 +9,7 @@ function SupplierForm() {
   let supplierObj;  
   const [orders, setOrders] = useState([]);
     let userObj;  
-    let user = localStorage.getItem("user");
+    let user = localStorage.getItem("supplierUser");
     if (user !== null) {
        userObj = JSON.parse(user); // to get the json syntax
     }
@@ -28,6 +28,7 @@ function SupplierForm() {
       });
   }, []);
 
+  
   return (
     <div className="supplier-form">
       <h1>Welcome, Supplier {userObj.userName}!</h1>
@@ -47,7 +48,7 @@ function SupplierForm() {
               <tr key={order.id}>
                 <td>{order.orderNumber}</td>
                 <td>{order.courier.user.userName}</td>
-                <td>{order.destination.name}</td>
+                <td>{order.destination? order.destination.name : "not found"}</td>
                 <td>{order.status}</td>
               </tr>
             ))}

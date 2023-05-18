@@ -14,6 +14,9 @@ import newOrder from './newOrder'
 import payments from './payments'
 import ReceivedOrders from './ReceivedOrd'
 import managerForm from './managerForm'
+import ManageCouriers from './manageCouriers';
+import addNewCourier from './addNewCourier'
+import withAuth from './withAuth';
 
 function App() {
   return (
@@ -26,13 +29,15 @@ function App() {
         <Route exact path="/registrationForm" component={RegistrationForm} />
         <Route exact path="/supplierRegister" component={supplierRegister} />
         <Route exact path="/courierRegister" component={courierRegister} />
-        <Route exact path="/supplierForm" component={supplierForm} />
+        <Route exact path="/supplierForm" component={withAuth(supplierForm)} />
         <Route exact path="/supplierForm/editOrder" component={editOrder} />
         <Route exact path="/supplierForm/newOrder" component={newOrder} />
         <Route exact path="/supplierForm/payments" component={payments} />
-        <Route exact path="/courierForm" component={courierForm} />
+        <Route exact path="/courierForm" component={withAuth(courierForm)} />
         <Route exact path="/courierForm/ReceivedOrders" component={ReceivedOrders} />
-        <Route exact path="/managerForm" component={managerForm} />
+        <Route exact path="/managerForm" component={withAuth(managerForm)} />
+        <Route exact path="/managerForm/manageCouriers" component={ManageCouriers} />
+        <Route exact path="/ManagerForm/manageCouriers/addNewCourier" component={addNewCourier} />
 
 
 

@@ -25,11 +25,9 @@ const flyOrderSchema = new mongoose.Schema({
     },
     completedDate: {
         type: String,
-        required: true,
     },
     customerPhoneNumber: {
         type: String,
-        required: true,
     },
     origin: {
         type: mongoose.Schema.Types.ObjectId,

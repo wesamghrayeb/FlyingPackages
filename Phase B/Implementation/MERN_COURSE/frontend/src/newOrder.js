@@ -70,13 +70,14 @@ export default function NewOrder() {
               submitDate: submitDate,
               orderNumber: Math.floor(Math.random() * 100000) + 5,
               origin: thisSupplier.location._id,
-              completedDate: "15/06/2023",
+              completedDate: "",
             };
             // Send a POST request to the server to add the new order to the database
             axios
               .post("http://localhost:3000/api/v1/flyOrders/", newOrder)
               .then((response) => {
                 console.log(response.data);
+                // axios.post("http://localhost:3000/api/v1/bills")
                 alert("The order created, wait for approve from " + courier);
               })
               .catch((error) => {
@@ -124,7 +125,7 @@ export default function NewOrder() {
       userObj = JSON.parse(user); // to get the json syntax
     }
     axios
-      .get("http://localhost:3000/api/v1/Couriers") //get the couriers
+      .get("http://localhost:3000/api/v1/Couriers/Available") //get the couriers
       .then((response) => {
         setCouriers(response.data); // update the state with the fetched data
       })
@@ -261,7 +262,7 @@ export default function NewOrder() {
               {courierDistances.map((courierDistance) => (
                 <tr key={courierDistance.courier.user.userName}>
                   <td>{courierDistance.courier.user.userName}</td>
-                  <td>{courierDistance.distance}</td>
+                  <td>{courierDistance.distance.toFixed(2)}</td>
                   <td>{courierDistance.courier.user.phone}</td>
                 </tr>
               ))}

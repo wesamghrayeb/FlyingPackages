@@ -6,14 +6,12 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 
 function ManagerForm() {
-  let supplierObj;  
   const [orders, setOrders] = useState([]);
     let userObj;  
-    let user = localStorage.getItem("user");
+    let user = localStorage.getItem("managerUser");
     if (user !== null) {
        userObj = JSON.parse(user); // to get the json syntax
     }
-
   useEffect(() => { // here we chain multiple requests 
     axios.get('http://localhost:3000/api/v1/flyOrders/get/allOrders')//get all the orders history to show to the manager
       .then(response => {
@@ -33,7 +31,7 @@ function ManagerForm() {
           <thead>
             <tr>
               <th>Order Num</th>
-              <th>Suppleir</th>
+              <th>Supplierr</th>
               <th>Courier</th>
               <th>Status</th>
             </tr>
@@ -42,8 +40,8 @@ function ManagerForm() {
             {orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.orderNumber}</td>
-                <td>{order.courier.user.userName}</td>
                 <td>{order.supplier.user.userName}</td>
+                <td>{order.courier.user.userName}</td>
                 <td>{order.status}</td>
               </tr>
             ))}
@@ -53,7 +51,7 @@ function ManagerForm() {
       <div className="buttons-section">
         <Button
           component={Link}
-          to="/supplierForm/newOrder"
+          to="/ManagerForm/manageCouriers"
           color="primary"
           variant="contained"
           style={{ marginBottom: '8px' }}
@@ -62,7 +60,7 @@ function ManagerForm() {
         </Button>
         <Button
           component={Link}
-          to="/supplierForm/editOrder"
+          to="/ManagerForm/registraionRequests"
           color="primary"
           variant="contained"
           style={{ marginBottom: '8px' }}
@@ -71,7 +69,7 @@ function ManagerForm() {
         </Button>
         <Button
           component={Link}
-          to="/supplierForm/payments"
+          to="/ManagerForm/paymentsReports"
           color="primary"
           variant="contained"
           style={{ marginBottom: '16px' }}

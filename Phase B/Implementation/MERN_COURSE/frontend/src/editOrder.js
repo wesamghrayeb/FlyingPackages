@@ -8,7 +8,7 @@ function EditOrder() {
   let supplierObj;
   const [orders, setOrders] = useState([]);
   let userObj;
-  let user = localStorage.getItem("user");
+  let user = localStorage.getItem("supplierUser");
   if (user !== null) {
     userObj = JSON.parse(user); // to get the json syntax
   }

@@ -12,7 +12,7 @@ function ReceivedOrders() {
   if (thisCourier !== null) {
     courierObj = JSON.parse(thisCourier);
   }
-  console.log("new")
+  console.log("new");
   useEffect(() => {
     // Fetch the received orders data (pending orders for this courier)
     axios
@@ -22,7 +22,7 @@ function ReceivedOrders() {
       )
       .then((response) => {
         setOrders(response.data);
-        console.log(orders)
+        console.log(orders);
         // Check if the courier is currently taking an order
         const takingOrder = response.data.find(
           (order) =>
@@ -33,32 +33,43 @@ function ReceivedOrders() {
           setCurrentOrder(takingOrder);
         }
         axios
-        .get(
-          "http://localhost:3000/api/v1/flyOrders/get/courierOrders/" +
-            courierObj._id
-        )
-        .then((response) => {
-          setOrdersPend(response.data);
-        })
+          .get(
+            "http://localhost:3000/api/v1/flyOrders/get/courierOrders/" +
+              courierObj._id
+          )
+          .then((response) => {
+            setOrdersPend(response.data);
+          });
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const handleTakeOrder = async (orderId) => {
+  const handleTakeOrder = async (order) => {
     // Handle taking an order here
-    console.log("Taking order:", orderId);
+    console.log("Taking order:", order._id);
     await axios
       .put(
         "http://localhost:3000/api/v1/flyOrders/updateStatus/IN DELIVERY/" +
-          orderId
+          order._id
       )
       .then((response) => {
         console.log(response.data);
-        alert("You are taking the order: " + orderId);
+        alert("You are taking the order: " + order._id);
+        // axios
+        // .put("http://localhost:3000/api/v1/Couriers/updateStatus/" + order.courier,{
+        //   availablityStatus: "Busy"
+        // })
+        //   .then((response) => {
+        //     // Handle the response
+        //     console.log(response.data);
+        //   })
+        //   .catch((error) => {
+        //     // Handle the error
+        //     console.error(error);
+        //   });
         window.location.reload(); // Reload the page after showing the alert
-
       })
       .catch((error) => {
         console.log(error);
@@ -79,27 +90,59 @@ function ReceivedOrders() {
           "Rejected the notification sent to the supplier, Order: " + orderId
         );
         window.location.reload(); // Reload the page after showing the alert
-
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const handleCompleteDelivery = async (orderId) => {
+  const handleCompleteDelivery = async (order) => {
     // Handle completing the delivery of the current order here
-    console.log("Completing delivery of order:", orderId);
+    const dateString = order.submitDate;
+    const dateParts = dateString.split("/");
+    const day = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10);
+    const year = parseInt(dateParts[2], 10);
+
+    const date = new Date(year, month - 1, day);
+    const monthName = date.toLocaleString("en-US", { month: "long" });
+    console.log("Completing delivery of order:", order._id);
     await axios
       .put(
         "http://localhost:3000/api/v1/flyOrders/updateStatus/DELIVERED/" +
-          orderId
+          order._id
       )
       .then((response) => {
         console.log(response.data);
-        alert("Order " + orderId + " has been delivered!");
+        alert("Order " + order._id + " has been delivered!");
         setCurrentOrder(null); // Set the current order to null to indicate that it has been completed
-        window.location.reload(); // Reload the page after showing the alert
+        axios
+          .post("http://localhost:3000/api/v1/bills", {
+            supplier: order.supplier,
+            month: monthName,
+          })
+          .then((response) => {
+            // Handle the response
+            console.log(response.data);
+          })
+          .catch((error) => {
+            // Handle the error
+            console.error(error);
+          });
+          // axios
+          // .put("http://localhost:3000/api/v1/Couriers/updateStatus/" + order.courier,{
+          //   availablityStatus: "Available"
 
+          // })
+          // .then((response) => {
+          //   // Handle the response
+          //   console.log(response.data);
+          // })
+          // .catch((error) => {
+          //   // Handle the error
+          //   console.error(error);
+          // });
+        window.location.reload(); // Reload the page after showing the alert
       })
       .catch((error) => {
         console.log(error);
@@ -121,7 +164,9 @@ function ReceivedOrders() {
             You are currently delivering order {currentOrder.orderNumber}.
             Please complete the delivery before taking another order.
           </p>
-          <button onClick={() => handleCompleteDelivery(currentOrder._id)}>Complete Delivery</button>
+          <button onClick={() => handleCompleteDelivery(currentOrder)}>
+            Complete Delivery
+          </button>
         </div>
       )}
       <button onClick={handleGoBack}>Go Back</button>
@@ -145,7 +190,7 @@ function ReceivedOrders() {
               <td>{order.submitDate + " " + order.submitHour}</td>
               <td>
                 <button
-                  onClick={() => handleTakeOrder(order._id)}
+                  onClick={() => handleTakeOrder(order)}
                   disabled={currentOrder !== null}
                 >
                   Take

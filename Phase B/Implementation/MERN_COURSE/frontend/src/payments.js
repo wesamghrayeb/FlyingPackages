@@ -32,7 +32,7 @@ export default function Dashboard() {
   let supplierObj;
   const [list, setList] = useState([]);
   let userObj;
-  let user = localStorage.getItem("user");
+  let user = localStorage.getItem("supplierUser");
   if (user !== null) {
     userObj = JSON.parse(user); // to get the json syntax
   }

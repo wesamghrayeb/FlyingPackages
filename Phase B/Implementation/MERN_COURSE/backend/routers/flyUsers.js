@@ -2,6 +2,8 @@ const {flyUser} = require('../models/flyUser');
 const {Supplier} = require('../models/Supplier');
 const {Courier} = require('../models/Courier');
 const express = require('express');
+const jwt = require('jsonwebtoken');
+
 //const { OrderItem } = require('../models/oreder-item');
 const router = express.Router();
 
@@ -41,15 +43,21 @@ else{
 })
 
 
-router.post('/login', async (req,res) => {
-    console.log(req.body)
-    const user = await flyUser.findOne({email: req.body.email})
+
+router.post('/login', async (req, res) => {
+    console.log(req.body);
+    const user = await flyUser.findOne({ email: req.body.email });
     const secret = process.env.secret;
-    if(!user) {
-        return res.status(400).send('The user not found');
+    if (!user) {
+      return res.status(400).send('The user not found');
     }
-    res.status(200).send(user);
-})
+  
+    // Generate a token with our secret
+    const token = jwt.sign({ userId: user._id, role: user.role }, secret, { expiresIn: '1h' });
+  
+    // Send the token and user data in the response
+    res.status(200).send({ token, user });
+  });
 
 router.get('/get/count', async (req, res) =>{
     const userCount = await flyUser.countDocuments({}).exec();

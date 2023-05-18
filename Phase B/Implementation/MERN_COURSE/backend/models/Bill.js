@@ -8,25 +8,21 @@ const billSchema = new mongoose.Schema({
     },
     month: {
         type: String,
-        required: true,
     },
     year: {
         type: Number,
-        required: true,
     },
     status: {
         type: String,
-        enum: ['type1', 'type2','type3'],
-        default : 'type1',
+        enum: ['Done', 'Pending'],
+        default : 'Pending',
     },
     amount: {
         type: Number,
-        required: true,
         default : 0
     },
     ordersPerMonth: {
         type: Number,
-        required: true,
         default : 0
     }
 });

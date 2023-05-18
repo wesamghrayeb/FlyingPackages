@@ -1,26 +1,31 @@
-
-const {Location} = require('../models/Location');
+const { Location } = require('../models/Location');
 const express = require('express');
-//const { OrderItem } = require('../models/oreder-item');
 const router = express.Router();
 
+router.post('/', async (req, res) => {
+  const { latitude, longitude, name } = req.body;
 
+  // Check if a location with the same latitude, longitude, and name already exists so if it didn't exist, its null
+  let existingLocation = await Location.findOne({ latitude, longitude, name });
 
-router.post('/', async (req,res)=>{
+  if (existingLocation) {
+    // If the location already exists, return the existing one and there is no need to save
+    return res.send(existingLocation);
+  }
 
+  // Create a new location
+  let location = new Location({
+    latitude,
+    longitude,
+    name,
+  });
 
-    let location = new Location({
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        name: req.body.name,
-    })
-    location = await location.save();
+  location = await location.save();
 
-    if(!location)
-    return res.status(400).send('the location cannot be added!')
+  if (!location)
+    return res.status(400).send('The location could not be added!');
 
-    res.send(location);
-})
-
+  res.send(location);
+});
 
 module.exports = router;

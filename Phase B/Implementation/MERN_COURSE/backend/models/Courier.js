@@ -8,12 +8,10 @@ const courierSchema = new mongoose.Schema({
     },
     hoursPerMonth: {
         type: Number,
-        required: true,
         default : 0
     },
     deliveriesPerMonth: {
         type: Number,
-        required: true,
         default : 0
     },
     availablityStatus: {
